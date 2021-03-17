@@ -1,6 +1,9 @@
-﻿using BLL.Interfaces;
+﻿using AutoMapper;
+using BLL.DTOs;
+using BLL.Interfaces;
 using DAL.Interfaces;
 using DAL.Models;
+using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,16 +13,19 @@ using System.Threading.Tasks;
 
 namespace BLL.Services
 {
-    public class UserService : IService<User>
+    public class UserService : IUserService
     {
-        private readonly IUserRepository userRepository;
+        //private readonly IUserRepository userRepository;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
         
-        public UserService(IUserRepository repository)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            userRepository = repository;
+            this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
-        public async Task<ActionResult<User>> Create(User entity)
+        public async Task<UserDTO> Create(UserDTO entity)
         {
             var newUser = new User
             {
@@ -34,22 +40,23 @@ namespace BLL.Services
                     City = entity.Adress.City
                 }
             };
-            return await userRepository.Create(newUser);
+            await unitOfWork.UserRepository.Create(newUser);
+            return entity;
         }
 
-        public async Task<ActionResult<User>> Delete(int id)
+        public async Task<UserDTO> Delete(int id)
         {
-            return await userRepository.Delete(id);
+            return mapper.Map<UserDTO>(await unitOfWork.UserRepository.Delete(id));
         }
 
-        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        public async Task<IEnumerable<UserDTO>> GetAll()
         {
-            return await userRepository.GetAll();
+            return mapper.Map<IEnumerable<UserDTO>>(await unitOfWork.UserRepository.GetAll());
         }
 
-        public async Task<ActionResult<User>> GetById(int id)
+        public async Task<UserDTO> GetById(int id)
         {
-            return await userRepository.GetById(id);
+            return mapper.Map<UserDTO>(await unitOfWork.UserRepository.GetById(id));
         }
         private string Hash(string password)
         {
@@ -68,9 +75,10 @@ namespace BLL.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ActionResult<User>> Update(User entity)
+        public async Task<UserDTO> Update(UserDTO entity)
         {
-            return await userRepository.Update(entity);
+            var usr = mapper.Map<User>(entity);
+            return mapper.Map<UserDTO>(await unitOfWork.UserRepository.Update(usr));
         }
     }
 }

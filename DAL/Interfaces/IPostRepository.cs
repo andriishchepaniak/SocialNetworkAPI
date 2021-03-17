@@ -9,10 +9,10 @@ namespace DAL.Interfaces
 {
     public interface IPostRepository
     {
-        Task<ActionResult<IEnumerable<Post>>> GetAll();
-        Task<ActionResult<Post>> GetById(int id);
-        Task<ActionResult<Post>> Create(Post entity);
-        Task<ActionResult<Post>> Update(Post entity);
-        Task<ActionResult<Post>> Delete(int id);
+        Task<IEnumerable<Post>> GetAll();
+        Task<Post> GetById(int id);
+        Task<Post> Create(Post entity);
+        Task<Post> Update(Post entity);
+        Task<Post> Delete(int id);
     }
 }

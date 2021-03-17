@@ -9,11 +9,11 @@ namespace DAL.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<ActionResult<IEnumerable<User>>> GetAll();
-        public Task<ActionResult<User>> GetById(int id);
-        public Task<ActionResult<User>> Create(User entity);
-        public Task<ActionResult<User>> Update(User entity);
-        public Task<ActionResult<User>> Delete(int id);
+        public Task<IEnumerable<User>> GetAll();
+        public Task<User> GetById(int id);
+        public Task<User> Create(User entity);
+        public Task<User> Update(User entity);
+        public Task<User> Delete(int id);
         
     }
 }
