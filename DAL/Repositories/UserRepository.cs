@@ -16,7 +16,7 @@ namespace DAL.Repositories
         {
             db = context;
         }
-        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        public async Task<IEnumerable<User>> GetAll()
         {
             //Test all methods
 
@@ -34,23 +34,23 @@ namespace DAL.Repositories
             //await Post(user);
             return await db.Users.Include(u => u.Posts).Include(u => u.Adress).ToListAsync();
         }
-        public async Task<ActionResult<User>> GetById(int id)
+        public async Task<User> GetById(int id)
         {
             return await db.Users.Include(u => u.Posts).Include(u => u.Adress).FirstOrDefaultAsync(user => user.Id == id);
         }
-        public async Task<ActionResult<User>> Create(User user)
+        public async Task<User> Create(User user)
         {
             db.Users.Add(user);
             await db.SaveChangesAsync();
             return user;
         }
-        public async Task<ActionResult<User>> Update(User user)
+        public async Task<User> Update(User user)
         {
             db.Users.Update(user);
             await db.SaveChangesAsync();
             return user;
         }
-        public async Task<ActionResult<User>> Delete(int id)
+        public async Task<User> Delete(int id)
         {
             var user = db.Users.Find(id);
             db.Users.Remove(user);

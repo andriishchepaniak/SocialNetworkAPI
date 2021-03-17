@@ -16,7 +16,7 @@ namespace DAL.Repositories
         {
             db = context;
         }
-        public async Task<ActionResult<IEnumerable<Post>>> GetAll()
+        public async Task<IEnumerable<Post>> GetAll()
         {
             //Test all methods
 
@@ -34,23 +34,23 @@ namespace DAL.Repositories
             //await Post(user);
             return await db.Posts.ToListAsync();
         }
-        public async Task<ActionResult<Post>> GetById(int id)
+        public async Task<Post> GetById(int id)
         {
             return await db.Posts.FirstOrDefaultAsync(post => post.Id == id);
         }
-        public async Task<ActionResult<Post>> Create(Post post)
+        public async Task<Post> Create(Post post)
         {
             db.Posts.Add(post);
             await db.SaveChangesAsync();
             return post;
         }
-        public async Task<ActionResult<Post>> Update(Post post)
+        public async Task<Post> Update(Post post)
         {
             db.Posts.Update(post);
             await db.SaveChangesAsync();
             return post;
         }
-        public async Task<ActionResult<Post>> Delete(int id)
+        public async Task<Post> Delete(int id)
         {
             var post = db.Posts.Find(id);
             db.Posts.Remove(post);

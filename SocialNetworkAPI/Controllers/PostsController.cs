@@ -1,4 +1,6 @@
-﻿using DAL;
+﻿using BLL.DTOs;
+using BLL.Interfaces;
+using DAL;
 using DAL.Interfaces;
 using DAL.Models;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Web.Http.Results;
 
 namespace SocialNetworkAPI.Controllers
 {
@@ -15,19 +19,18 @@ namespace SocialNetworkAPI.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly ApplicationDbContext db;
-        private readonly IPostRepository postRepository;
-        public PostsController(ApplicationDbContext context, IPostRepository postRepository)
+        private readonly IPostService postService;
+        public PostsController(IPostService postService)
         {
-            db = context;
-            this.postRepository = postRepository;
+            this.postService = postService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> Get()
+        public async Task<IActionResult> Get()
         {
             //Test all REST methods
-
+            //var post = await Get(3);
+            //post.Text = "I am iron man";
             //var user = new User
             //{
             //    Id = 3,
@@ -37,43 +40,46 @@ namespace SocialNetworkAPI.Controllers
             //    Email = "scarlett@gmail.com",
             //    Password = "1111"
             //};
-            //await Put(user);
+            //await Put(post);
             //await Delete(3);
             //await Post(user);
-            
-            return await postRepository.GetAll();
+
+            var result = await postService.GetAll();
+             
+            return result != null 
+                ? new JsonResult(result) 
+                : (IActionResult)BadRequest();
         }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> Get(int id)
+        public async Task<PostDTO> Get(int id)
         {
-            return await postRepository.GetById(id);
+            var result = await postService.GetById(id);
+            return result != null
+                ? result
+                : null;
         }
         [HttpPost]
-        public async Task<ActionResult<Post>> Post(Post post)
+        public async Task<IActionResult> Post(PostDTO post)
         {
-            await postRepository.Create(post);
-            return Ok(post);
+            var result = await postService.Create(post);
+            return result != null
+                ? CreatedAtAction(nameof(Post), post)
+                : (IActionResult)BadRequest();
         }
         [HttpPut]
-        public async Task<ActionResult<User>> Put(Post post)
+        public async Task<IActionResult> Put(PostDTO post)
         {
-            if (post == null)
-            {
-                return NotFound();
-            }
-            await postRepository.Update(post);
-            return Ok(post);
+            var result = await postService.Update(post);
+            return result != null
+                ? NoContent()
+                : (IActionResult)BadRequest();
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> Delete(int id)
         {
-            var post = db.Posts.Find(id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-            await postRepository.Delete(id);
-            return Ok(post);
+            await postService.Delete(id);
+            return NoContent();
         }
     }
 }
