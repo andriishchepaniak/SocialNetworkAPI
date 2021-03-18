@@ -22,5 +22,8 @@ namespace DAL.Models
         
         public Adress Adress { get; set; }
         public List<Post> Posts { get; set; }
+
+        public List<User> Followers { get; set; }
+        public List<User> Followings { get; set; }
     }
 }

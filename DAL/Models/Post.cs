@@ -11,5 +11,8 @@ namespace DAL.Models
         public string Text { get; set; }
         [Required]
         public DateTime PublicatedTime { get; set; }
+
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

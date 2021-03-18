@@ -11,6 +11,7 @@ namespace DAL.Interfaces
     {
         Task<IEnumerable<Post>> GetAll();
         Task<Post> GetById(int id);
+        Task<IEnumerable<Post>> GetAllPostsByUserId(int id);
         Task<Post> Create(Post entity);
         Task<Post> Update(Post entity);
         Task<Post> Delete(int id);

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,25 +19,21 @@ namespace DAL.Repositories
         }
         public async Task<IEnumerable<Post>> GetAll()
         {
-            //Test all methods
-
-            //var user = new User
-            //{
-            //    Id = 3,
-            //    FirstName = "Scarlett",
-            //    LastName = "Johanssson",
-            //    Age = 37,
-            //    Email = "scarlett@gmail.com",
-            //    Password = "1111"
-            //};
-            //await Put(user);
-            //await Delete(3);
-            //await Post(user);
-            return await db.Posts.ToListAsync();
+            return await db.Posts
+                .Include(p => p.User)
+                .ToListAsync();
         }
         public async Task<Post> GetById(int id)
         {
-            return await db.Posts.FirstOrDefaultAsync(post => post.Id == id);
+            return await db.Posts
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(post => post.Id == id);
+        }
+        public async Task<IEnumerable<Post>> GetAllPostsByUserId(int id)
+        {
+            return await db.Posts
+                .Where(p => p.Id == id)
+                .ToListAsync();
         }
         public async Task<Post> Create(Post post)
         {

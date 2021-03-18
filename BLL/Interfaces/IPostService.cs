@@ -10,6 +10,7 @@ namespace BLL.Interfaces
     {
         Task<IEnumerable<PostDTO>> GetAll();
         Task<PostDTO> GetById(int id);
+        Task<IEnumerable<PostDTO>> GetAllPostsByUserId(int id);
         Task<PostDTO> Create(PostDTO post);
         Task<PostDTO> Update(PostDTO post);
         Task<PostDTO> Delete(int id);

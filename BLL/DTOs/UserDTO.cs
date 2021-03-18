@@ -14,6 +14,8 @@ namespace BLL.DTOs
         public string Password { get; set; }
 
         public AdressDTO Adress { get; set; }
-        public List<PostDTO> Posts { get; set; }
+        
+        public List<UserDTO> Followers { get; set; }
+        public List<UserDTO> Followings { get; set; }
     }
 }
