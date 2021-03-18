@@ -18,25 +18,16 @@ namespace DAL.Repositories
         }
         public async Task<IEnumerable<User>> GetAll()
         {
-            //Test all methods
-
-            //var user = new User
-            //{
-            //    Id = 3,
-            //    FirstName = "Scarlett",
-            //    LastName = "Johanssson",
-            //    Age = 37,
-            //    Email = "scarlett@gmail.com",
-            //    Password = "1111"
-            //};
-            //await Put(user);
-            //await Delete(3);
-            //await Post(user);
-            return await db.Users.Include(u => u.Posts).Include(u => u.Adress).ToListAsync();
+            return await db.Users
+                .Include(u => u.Adress)
+                .Include(u => u.Followers)
+                .Include(u => u.Followings)
+                .ToListAsync();
         }
         public async Task<User> GetById(int id)
         {
-            return await db.Users.Include(u => u.Posts).Include(u => u.Adress).FirstOrDefaultAsync(user => user.Id == id);
+            return await db.Users.Include(u => u.Adress)
+                .FirstOrDefaultAsync(user => user.Id == id);
         }
         public async Task<User> Create(User user)
         {

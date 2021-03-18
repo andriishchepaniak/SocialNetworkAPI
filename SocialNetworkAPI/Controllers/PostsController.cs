@@ -25,6 +25,7 @@ namespace SocialNetworkAPI.Controllers
             this.postService = postService;
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -58,6 +59,14 @@ namespace SocialNetworkAPI.Controllers
             return result != null
                 ? result
                 : null;
+        }
+        [HttpGet("user/id")]
+        public async Task<IActionResult> GetPosts(int id)
+        {
+            var result = await postService.GetAllPostsByUserId(id);
+            return result != null
+                ? new JsonResult(result)
+                : (IActionResult)BadRequest();
         }
         [HttpPost]
         public async Task<IActionResult> Post(PostDTO post)
