@@ -48,13 +48,7 @@ namespace SocialNetworkAPI.Controllers
         [HttpGet("{id}")]
         public async Task<UserDTO> Get(int id)
         {
-            var result = await userService.GetById(id);
-            var user = await userService.GetById(3);
-
-            result.Followers.Add(user);
-            var res2 = await userService.Update(result);
-            
-            return res2;
+            return await userService.GetById(id);
         }
         [HttpPost]
         public async Task<ActionResult<UserDTO>> Post(UserDTO user)
