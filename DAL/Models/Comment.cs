@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace DAL.Models
 {
-    public class Post
+    public class Comment
     {
         [Key]
         public int Id { get; set; }
-        [Required]
         public string Text { get; set; }
-        [Required]
-        public DateTime PublicatedTime { get; set; }
-
-        public int UserId { get; set; }
+        public Post Post { get; set; }
+        public int PostId { get; set; }
         public User User { get; set; }
-
-        public List<Like> Likes { get; set; }
-        public List<Comment> Comments { get; set; }
+        public int UserId { get; set; }
+        public DateTime PublicatedTime { get; set; }
     }
 }

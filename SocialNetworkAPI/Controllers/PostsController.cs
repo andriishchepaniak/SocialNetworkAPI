@@ -1,17 +1,8 @@
 ﻿using BLL.DTOs;
 using BLL.Interfaces;
-using DAL;
-using DAL.Interfaces;
 using DAL.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Text.Json;
-using System.Web.Http.Results;
 
 namespace SocialNetworkAPI.Controllers
 {
@@ -26,55 +17,40 @@ namespace SocialNetworkAPI.Controllers
         }
 
         
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("getByUserId/{userId}")]
+        public async Task<IActionResult> GetByUserId(int userId)
         {
-            //Test all REST methods
-            //var post = await Get(3);
-            //post.Text = "I am iron man";
-            //var user = new User
-            //{
-            //    Id = 3,
-            //    FirstName = "Scarlett",
-            //    LastName = "Johanssson",
-            //    Age = 37,
-            //    Email = "scarlett@gmail.com",
-            //    Password = "1111"
-            //};
-            //await Put(post);
-            //await Delete(3);
-            //await Post(user);
-
+            var result = await postService.GetAllPostsByUserId(userId);
+             
+            return result != null 
+                ? new JsonResult(result) 
+                : BadRequest();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
             var result = await postService.GetAll();
              
             return result != null 
                 ? new JsonResult(result) 
-                : (IActionResult)BadRequest();
+                : BadRequest();
         }
-
         [HttpGet("{id}")]
-        public async Task<PostDTO> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             var result = await postService.GetById(id);
             return result != null
-                ? result
-                : null;
-        }
-        [HttpGet("user/id")]
-        public async Task<IActionResult> GetPosts(int id)
-        {
-            var result = await postService.GetAllPostsByUserId(id);
-            return result != null
                 ? new JsonResult(result)
-                : (IActionResult)BadRequest();
+                : BadRequest();
         }
+        
         [HttpPost]
         public async Task<IActionResult> Post(PostDTO post)
         {
             var result = await postService.Create(post);
             return result != null
-                ? CreatedAtAction(nameof(Post), post)
-                : (IActionResult)BadRequest();
+                ? new JsonResult(result)
+                : BadRequest();
         }
         [HttpPut]
         public async Task<IActionResult> Put(PostDTO post)
@@ -82,7 +58,7 @@ namespace SocialNetworkAPI.Controllers
             var result = await postService.Update(post);
             return result != null
                 ? NoContent()
-                : (IActionResult)BadRequest();
+                : BadRequest();
         }
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> Delete(int id)

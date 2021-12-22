@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BLL.DTOs
 {
-    public class UserDTO
+    public class FollowUserDTO
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -14,11 +14,5 @@ namespace BLL.DTOs
         public string Password { get; set; }
 
         public AdressDTO Adress { get; set; }
-        //
-        //public List<FollowUserDTO> Followers { get; set; }
-        //public List<FollowUserDTO> Followings { get; set; } 
-        
-        public List<UserDTO> Followers { get; set; }
-        public List<UserDTO> Followings { get; set; }
     }
 }

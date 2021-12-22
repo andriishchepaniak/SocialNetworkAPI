@@ -30,7 +30,7 @@ namespace SocialNetworkAPI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
-            //services.AddTransient<UserRepository>();
+            services.AddTransient<UserRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
 
@@ -44,6 +44,8 @@ namespace SocialNetworkAPI
                 config.AddProfile(new UserProfile());
                 config.AddProfile(new AdressProfile());
                 config.AddProfile(new PostProfile());
+                config.AddProfile(new LikeProfile());
+                config.AddProfile(new CommentProfile());
             }).CreateMapper());
 
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -67,7 +69,8 @@ namespace SocialNetworkAPI
 
             app.UseCors(options =>
             {
-                options.WithOrigins("http://localhost:3000")
+                options
+                   .AllowAnyOrigin()
                    .AllowAnyHeader()
                    .AllowAnyMethod();
             });
