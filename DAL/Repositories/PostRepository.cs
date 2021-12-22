@@ -21,6 +21,7 @@ namespace DAL.Repositories
         {
             return await db.Posts
                 .Include(p => p.User)
+                .Include(p => p.Likes)
                 .ToListAsync();
         }
         public async Task<Post> GetById(int id)
@@ -32,7 +33,8 @@ namespace DAL.Repositories
         public async Task<IEnumerable<Post>> GetAllPostsByUserId(int id)
         {
             return await db.Posts
-                .Where(p => p.Id == id)
+                .Where(p => p.User.Id == id)
+                .Include(p => p.User)
                 .ToListAsync();
         }
         public async Task<Post> Create(Post post)

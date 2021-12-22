@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,13 +21,21 @@ namespace DAL.Repositories
         {
             return await db.Users
                 .Include(u => u.Adress)
-                .Include(u => u.Followers)
-                .Include(u => u.Followings)
+                //.Include(u => u.Followers)
+                //    .ThenInclude(follower => follower.Adress)
+                //.Include(u => u.Followings)
+                //    .ThenInclude(following => following.Adress)
                 .ToListAsync();
         }
         public async Task<User> GetById(int id)
         {
-            return await db.Users.Include(u => u.Adress)
+            return await db.Users
+                .Include(u => u.Adress)
+                .Include(u => u.Followers)
+                    .ThenInclude(follower => follower.Adress)
+                .Include(u => u.Followings)
+                    .ThenInclude(following => following.Adress)
+                .Include(u => u.Posts)
                 .FirstOrDefaultAsync(user => user.Id == id);
         }
         public async Task<User> Create(User user)
@@ -51,6 +60,30 @@ namespace DAL.Repositories
         public async Task<User> Find(int id)
         {
             return await db.Users.FindAsync(id);
+        }
+        public async Task<int> GetUsersCount()
+        {
+            return await db.Users.CountAsync();
+        }
+
+        public async Task<IEnumerable<User>> GetUsers(int count)
+        {
+            return await db.Users
+                .Take(count)
+                .ToListAsync();
+        }
+        public async Task<User> Login(string login, string password)
+        {
+            return await db.Users
+                .FirstOrDefaultAsync(u => u.Email == login && u.Password == password);
+        }
+        public async Task<IEnumerable<User>> GetUsers(int offset, int count)
+        {
+            return await db.Users
+                .Include(u => u.Adress)
+                .Skip(offset)
+                .Take(count)
+                .ToListAsync();
         }
     }
 }

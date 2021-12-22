@@ -1,18 +1,5 @@
 ﻿using BLL.Interfaces;
-using BLL.Services;
-using DAL;
-using DAL.Interfaces;
-using DAL.Models;
-using DAL.Repositories;
-using Microsoft.Ajax.Utilities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Linq;
 using System.Threading.Tasks;
 using BLL.DTOs;
 
@@ -22,60 +9,94 @@ namespace SocialNetworkAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        //private readonly ApplicationDbContext db;
-        //private readonly IRepository<User> userRepository;
         private readonly IUserService userService;
         public UsersController(IUserService service)
         {
             userService = service;
         }
+        
         [HttpGet]
-        public async Task<JsonResult> Get()
+        public async Task<IActionResult> Get(int offset = 0, int count = 10)
         {
-            var result = await userService.GetAll();
-            var jsonData = new
+            var result = new
             {
-                data = result,
-                count = 10
+                items = await userService.GetUsers(offset, count),               
+                totalUsersCount = await userService.GetUsersCount()
             };
 
-            var res = new JsonResult(jsonData);
-            return res;
-            //var result = Get(2);
-            //return result;
+            return result != null
+                ? new JsonResult(result)
+                : BadRequest();
         }
-
-        [HttpGet("{id}")]
-        public async Task<UserDTO> Get(int id)
+        [HttpGet("count")]
+        public async Task<int> GetCount()
         {
-            return await userService.GetById(id);
+            var result = await userService.GetUsersCount();
+            return result;
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await userService.GetById(id);
+            return result != null
+                ? new JsonResult(result)
+                : BadRequest();
+        }
+        [HttpGet("search/{search}")]
+        public async Task<IActionResult> SearchUser(string search)
+        {
+            var result = await userService.GetByName(search);
+            return result != null
+                ? new JsonResult(result)
+                : BadRequest();
+        }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUser loginUser)
+        {
+            var result = await userService.LogIn(loginUser.Login, loginUser.Password);
+            return result != null
+                ? Ok(result)
+                : BadRequest();
+        }
+        [HttpGet("count={count}")]
+        public async Task<IActionResult> GetUsers(int count)
+        {
+            var result = await userService.GetUsers(count);
+            return result != null
+                ? new JsonResult(result)
+                : BadRequest();
+        }
+        [HttpGet("offset={offset}&count={count}")]
+        public async Task<IActionResult> GetUsers(int offset, int count)
+        {
+            var result = await userService.GetUsers(offset, count);
+            return result != null
+                ? new JsonResult(result)
+                : BadRequest();
         }
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Post(UserDTO user)
+        public async Task<IActionResult> Post(UserDTO user)
         {
-            await userService.Create(user);
-            return Ok(user);
+            var result = await userService.Update(user);
+            return result != null
+                ? new JsonResult(result)
+                : BadRequest();
         }
         [HttpPut]
-        public async Task<ActionResult<UserDTO>> Put(UserDTO user)
+        public async Task<IActionResult> Put(UserDTO user)
         {
-            if (user == null)
-            {
-                return NotFound();
-            }
-            await userService.Update(user);
-            return Ok(user);
+            var result = await userService.Create(user);
+            return result != null
+                ? NoContent()
+                : BadRequest();
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult<UserDTO>> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var user = userService.GetById(id);
-            if(user == null)
-            {
-                return NotFound();
-            }
-            await userService.Delete(id);
-            return Ok(user);
+            var result = await userService.Delete(id);
+            return result != null
+                ? NoContent()
+                : BadRequest();
         }
     }
 }

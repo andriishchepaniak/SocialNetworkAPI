@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,5 +13,8 @@ namespace BLL.DTOs
 
         public int UserId { get; set; }
         public UserDTO User { get; set; }
+
+        public List<LikeDTO> Likes { get; set; }
+        public List<CommentDTO> Comments { get; set; }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using BLL.DTOs;
 using BLL.Interfaces;
-using DAL.Interfaces;
 using DAL.Models;
 using DAL.UnitOfWork;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace BLL.Services
         //private readonly IUserRepository userRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
-        
+
         public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
@@ -58,6 +57,15 @@ namespace BLL.Services
         {
             return mapper.Map<UserDTO>(await unitOfWork.UserRepository.GetById(id));
         }
+        public async Task<IEnumerable<UserDTO>> GetByName(string name)
+        {
+            return mapper.Map<IEnumerable<UserDTO>>(
+                (await unitOfWork.UserRepository.GetAll())
+                .Where(u => u.LastName.ToLower() == name.ToLower() 
+                || u.LastName.ToLower().Contains(name.ToLower())
+                || u.FirstName.ToLower() == name.ToLower() 
+                || u.FirstName.ToLower().Contains(name.ToLower())));
+        }
         private string Hash(string password)
         {
             using (SHA256 sha256Hash = SHA256.Create())
@@ -79,6 +87,37 @@ namespace BLL.Services
         {
             var usr = mapper.Map<User>(entity);
             return mapper.Map<UserDTO>(await unitOfWork.UserRepository.Update(usr));
+        }
+
+        public async Task<int> GetUsersCount()
+        {
+            return await unitOfWork.UserRepository.GetUsersCount();
+        }
+
+        public async Task<IEnumerable<UserDTO>> GetUsers(int count)
+        {
+            return mapper
+                .Map<IEnumerable<UserDTO>>(await unitOfWork.UserRepository.GetUsers(count));
+        }
+        public async Task<IEnumerable<UserDTO>> GetUsers(int offset, int count)
+        {
+            return mapper
+                .Map<IEnumerable<UserDTO>>
+                (await unitOfWork.UserRepository.GetUsers(offset, count));
+        }
+
+        public async Task<UserDTO> LogIn(string login, string password)
+        {
+            return mapper.Map<UserDTO>(await unitOfWork.UserRepository.Login(login, password));
+        }
+
+        public async Task<int> Subscribe(int currentUserId, int followUserId)
+        {
+            var CurrentUser = await unitOfWork.UserRepository.GetById(currentUserId);
+            var FollowUser = await unitOfWork.UserRepository.GetById(followUserId);
+            CurrentUser.Followings.Add(FollowUser);
+            FollowUser.Followers.Add(CurrentUser);
+            return await unitOfWork.SaveChanges();
         }
     }
 }
