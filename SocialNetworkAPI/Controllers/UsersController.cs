@@ -1,9 +1,8 @@
-﻿using BLL.Interfaces;
+﻿using BLL.DTOs;
+using BLL.Interfaces;
 using BLL.Services;
 using DAL;
-using DAL.Interfaces;
 using DAL.Models;
-using DAL.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +17,41 @@ namespace SocialNetworkAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        
+        private readonly IUserService _userService;
+        public UsersController(IUserService userService)
+        {
+            _userService = userService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _userService.GetAll());
+        }
+        [Route("getbypages")]
+        [HttpGet]
+        public async Task<IActionResult> GetByPages(int offset, int count)
+        {
+            return Ok(await _userService.GetAll(offset, count));
+        }
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetById(int userId)
+        {
+            return Ok(await _userService.GetById(userId));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] UserDTO user)
+        {
+            return Ok(await _userService.Create(user));
+        }
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] UserDTO user)
+        {
+            return Ok(await _userService.Update(user));
+        }
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> Delete(int userId)
+        {
+            return Ok(await _userService.Delete(userId));
+        }
     }
 }

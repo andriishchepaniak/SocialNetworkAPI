@@ -3,9 +3,6 @@ using BLL.Interfaces;
 using BLL.Mappings;
 using BLL.Services;
 using DAL;
-using DAL.Interfaces;
-using DAL.Repositories;
-using DAL.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +27,6 @@ namespace SocialNetworkAPI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
-            services.AddTransient<UserRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IPostRepository, PostRepository>();
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPostService, PostService>();
