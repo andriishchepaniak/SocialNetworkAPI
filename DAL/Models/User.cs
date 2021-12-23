@@ -13,8 +13,7 @@ namespace DAL.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        [Range(1, 150, ErrorMessage = "Age must be > 0")]
-        public int Age { get; set; }
+        public DateTime DateOfBirth { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
@@ -22,6 +21,8 @@ namespace DAL.Models
         
         public Adress Adress { get; set; }
         public List<Post> Posts { get; set; }
+        public List<Like> Likes { get; set; }
+        public List<Comment> Comments { get; set; }
 
         public List<User> Followers { get; set; }
         public List<User> Followings { get; set; }
