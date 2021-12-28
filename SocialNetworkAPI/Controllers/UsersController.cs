@@ -25,33 +25,51 @@ namespace SocialNetworkAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _userService.GetAll());
+            var result = await _userService.GetAll();
+            return result != null
+                ? Ok(result)
+                : BadRequest();
         }
         [Route("getbypages")]
         [HttpGet]
         public async Task<IActionResult> GetByPages(int offset, int count)
         {
-            return Ok(await _userService.GetAll(offset, count));
+            var result = await _userService.GetAll(offset, count);
+            return result != null
+                ? Ok(result)
+                : BadRequest();
         }
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetById(int userId)
         {
-            return Ok(await _userService.GetById(userId));
+            var result = await _userService.GetById(userId);
+            return result != null
+                ? Ok(result)
+                : BadRequest();
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserDTO user)
         {
-            return Ok(await _userService.Create(user));
+            var result = await _userService.Create(user);
+            return result != null
+                ? Ok(result)
+                : BadRequest();
         }
         [HttpPut]
         public async Task<IActionResult> Put([FromBody] UserDTO user)
         {
-            return Ok(await _userService.Update(user));
+            var result = await _userService.Update(user);
+            return result != null
+                ? Ok(result)
+                : BadRequest();
         }
         [HttpDelete("{userId}")]
         public async Task<IActionResult> Delete(int userId)
         {
-            return Ok(await _userService.Delete(userId));
+            var result = await _userService.Delete(userId);
+            return result != 0
+                ? Ok(result)
+                : BadRequest();
         }
     }
 }

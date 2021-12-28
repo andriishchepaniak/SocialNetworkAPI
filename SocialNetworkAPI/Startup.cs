@@ -1,4 +1,5 @@
 using AutoMapper;
+using BLL;
 using BLL.Interfaces;
 using BLL.Mappings;
 using BLL.Services;
@@ -30,6 +31,10 @@ namespace SocialNetworkAPI
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ILikeService, LikeService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ISubscribesService, SubscribesService>();
 
             services.AddSingleton(new MapperConfiguration(config => 
             {
@@ -44,6 +49,8 @@ namespace SocialNetworkAPI
                         options.SerializerSettings.ReferenceLoopHandling = 
                         Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            ConfigureAuthenticationExtension.ConfigureAuthentication(services);
 
             services.AddCors();
 
