@@ -24,10 +24,9 @@ namespace BLL.Services
         }
         public async Task<UserDTO> Create(UserDTO user)
         {
-            await _db.Users.AddAsync(_mapper.Map<User>(user));
+            var result = (await _db.Users.AddAsync(_mapper.Map<User>(user))).Entity;
             await _db.SaveChangesAsync();
-            var res = await _db.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
-            return _mapper.Map<UserDTO>(res);
+            return _mapper.Map<UserDTO>(result);
         }
 
         public async Task<int> Delete(int userId)
@@ -69,27 +68,13 @@ namespace BLL.Services
                 .ToListAsync());
         }
 
-        public async Task<IEnumerable<UserDTO>> GetUserFollowers(int userId)
-        {
-            var user = await _db.Users
-                .Include(u => u.Followers)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-            return _mapper.Map<IEnumerable<UserDTO>>(user.Followers.ToList());
-        }
-
-        public async Task<IEnumerable<UserDTO>> GetUserFollowings(int userId)
-        {
-            var user = await _db.Users
-                .Include(u => u.Followings)
-                .FirstOrDefaultAsync(u => u.Id == userId);
-            return _mapper.Map<IEnumerable<UserDTO>>(user.Followings.ToList());
-        }
+        
 
         public async Task<UserDTO> Update(UserDTO user)
         {
-            _db.Users.Update(_mapper.Map<User>(user));
+            var result = _db.Users.Update(_mapper.Map<User>(user)).Entity;
             await _db.SaveChangesAsync();
-            return _mapper.Map<UserDTO>(await _db.Users.FirstOrDefaultAsync(u => u.Id == user.Id));
+            return _mapper.Map<UserDTO>(result);
         }
     }
 }

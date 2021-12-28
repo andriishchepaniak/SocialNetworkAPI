@@ -13,8 +13,6 @@ namespace BLL.Interfaces
         Task<IEnumerable<UserDTO>> GetAll();
         Task<IEnumerable<UserDTO>> GetAll(int offset, int count);
         Task<IEnumerable<UserDTO>> GetSortedByName();
-        Task<IEnumerable<UserDTO>> GetUserFollowers(int userId);
-        Task<IEnumerable<UserDTO>> GetUserFollowings(int userId);
         Task<UserDTO> GetById(int userId);
         Task<UserDTO> Create(UserDTO user);
         Task<UserDTO> Update(UserDTO user);
